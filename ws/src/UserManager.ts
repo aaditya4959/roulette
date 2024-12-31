@@ -1,20 +1,17 @@
 import { WebSocket } from "ws"
 import { OutgoingMessages } from "./types";
+import { User } from "./Users";
 
 
 
-interface User {
-    id:number;
-    ws: WebSocket;
-    name: string;
-}
+
 
 let ID = 1;
 
 
 export class UserManager{
-    private _users: User[];
-    private static _instance : UserManager | null = null; // again the singleton pattern (By GPT)
+    private _users: User[] = [];
+    private static _instance : UserManager; // again the singleton pattern (By GPT)
 
     private constructor(){
         this._users = [];  // THis is the suggestion from the gpt
@@ -30,11 +27,11 @@ export class UserManager{
 
     addUser (ws: WebSocket, name: string){
         let id = ID;
-        this._users.push({
-            ws,
-            name,
+        this._users.push(new User(
             id,
-        })
+            name,
+            ws,
+        ))
 
 
         ws.on("close",() =>  this.removeUser(id))
